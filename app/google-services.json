@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "547849142028",
+    "project_id": "translateapp-ad288",
+    "storage_bucket": "translateapp-ad288.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547849142028:android:2d2210e35e7f37a65f9329",
+        "android_client_info": {
+          "package_name": "uz.jasurbekruzimov.translatorapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeZatu9ELkvJlSTDxNMx96hnxoLDSlq9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
