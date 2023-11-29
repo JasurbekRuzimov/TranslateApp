@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Translator App</string>
+    <string name="planet_prompt">Choose a planet</string>
+    <string name="enter_text">Enter text</string>
+    <string name="or">Or</string>
+    <string name="say_something">Say Something</string>
+    <string name="translate">Translate</string>
+    <string name="translated_text">Translated Text</string>
     <string name="HeaderText">Languages Translator</string>
+
 </resources>
