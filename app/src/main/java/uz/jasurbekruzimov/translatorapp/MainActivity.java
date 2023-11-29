@@ -21,29 +21,24 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
-import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
 
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
-
 public class MainActivity extends AppCompatActivity {
 
-    private Spinner fromSpinner, toSpinner;
     private TextInputEditText sourceEdit;
-    private ImageView micIV;
-    private MaterialButton translateBtn;
     private TextView translatedTV;
     String[] fromLang = {"From", "English", "Russian", "Turkish", "Korean", "Japanese", "German", "French", "Italian", "Spanish"};
     String[] toLang = {"To", "English", "Russian", "Turkish", "Korean", "Japanese", "German", "French", "Italian", "Spanish"};
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1;
-    int languageCode, fromLanguageCode, toLanguageCode = 0;
-
+    int fromLanguageCode, toLanguageCode = 0;
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     @Override
@@ -51,39 +46,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fromSpinner = findViewById(R.id.idFromSpinner);
-        toSpinner = findViewById(R.id.idToSpinner);
+        Spinner fromSpinner = findViewById(R.id.idFromSpinner);
+        Spinner toSpinner = findViewById(R.id.idToSpinner);
         sourceEdit = findViewById(R.id.idEditSource);
-        micIV = findViewById(R.id.idIVMic);
-        translateBtn = findViewById(R.id.idBtnTranslate);
+        ImageView micIV = findViewById(R.id.idIVMic);
+        MaterialButton translateBtn = findViewById(R.id.idBtnTranslate);
         translatedTV = findViewById(R.id.idTVTranslatedTV);
 
-        fromSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 fromLanguageCode = getLanguageCode(fromLang[position]);
             }
 
+            @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
-
         });
 
         ArrayAdapter<String> fromAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, fromLang);
         fromAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fromSpinner.setAdapter(fromAdapter);
 
-        toSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 toLanguageCode = getLanguageCode(toLang[position]);
             }
 
+            @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
-
         });
 
         ArrayAdapter<String> toAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, toLang);
@@ -104,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         micIV.setOnClickListener(v -> {
-            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH); // RecognizerIntent.ACTION_RECOGNIZE_SPEECH is a constant
+            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault()); // en-US is a constant
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
             i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to translate");
             try {
                 startActivityForResult(i, REQUEST_CODE_SPEECH_INPUT);
@@ -115,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     @Override
@@ -153,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Fail to translate: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -162,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private int getLanguageCode(String language) {
         int languageCode = 0;
@@ -194,8 +184,6 @@ public class MainActivity extends AppCompatActivity {
             case "Spanish":
                 languageCode = FirebaseTranslateLanguage.ES;
                 break;
-            default:
-                languageCode = 0;
         }
         return languageCode;
     }
