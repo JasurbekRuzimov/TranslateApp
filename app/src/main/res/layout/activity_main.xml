@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Base.Theme.TranslatorApp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray"
@@ -13,10 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        tools:ignore="ScrollViewCount">
+        tools:ignore="ScrollViewCount,UselessParent">
 
         <LinearLayout
-            style="@style/Base.Theme.TranslatorApp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/gray"
@@ -25,7 +23,6 @@
 
 
             <TextView
-                style="@style/TextAppearance.AppCompat.Display1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -54,6 +51,7 @@
                     android:layout_margin="3dp"
                     android:layout_weight="1"
                     android:padding="3dp"
+                    android:scrollbarSize="15sp"
                     tools:ignore="Suspicious0dp" />
 
                 <ImageView
@@ -76,6 +74,7 @@
                     android:layout_margin="3dp"
                     android:layout_weight="1"
                     android:padding="3dp"
+                    android:scrollbarSize="15sp"
                     tools:ignore="Suspicious0dp" />
 
 
@@ -91,7 +90,7 @@
                 android:hint="@string/enter_text"
                 android:padding="5dp"
                 app:counterEnabled="true"
-                app:counterMaxLength="3000">
+                app:counterMaxLength="4000">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/idEditSource"
@@ -110,7 +109,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/idTextOr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
