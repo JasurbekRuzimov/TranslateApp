@@ -1,5 +1,6 @@
 package uz.jasurbekruzimov.translatorapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,12 +16,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -87,16 +91,13 @@ public class MainActivity extends AppCompatActivity {
         toSpinner.setAdapter(toAdapter);
 
         translateBtn.setOnClickListener(v -> {
-            translatedTV.setText("Translated Text");
-            if (Objects.requireNonNull(sourceEdit.getText()).toString().isEmpty()) {
-                sourceEdit.setError("Please enter text to translate");
-                return;
+            translatedTV.setText("");
+            if (sourceEdit.getText().toString().isEmpty()) {
+                Toast.makeText(MainActivity.this, "Please enter text to translate", Toast.LENGTH_SHORT).show();
             } else if (fromLanguageCode == 0) {
-                sourceEdit.setError("Please select source language");
-                return;
+                Toast.makeText(MainActivity.this, "Please select source language", Toast.LENGTH_SHORT).show();
             } else if (toLanguageCode == 0) {
-                sourceEdit.setError("Please select target language");
-                return;
+                Toast.makeText(MainActivity.this, "Please select target language", Toast.LENGTH_SHORT).show();
             } else {
                 translateText(fromLanguageCode, toLanguageCode, sourceEdit.getText().toString());
             }
@@ -115,34 +116,53 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        @Override
-//        protected void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
-//            super.onActivityResult(requestCode, resultCode, data);
-//            if (requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == RESULT_OK && data != null) {
-//                ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-//                sourceEdit.setText(Objects.requireNonNull(result).get(0));
-//            }
-//        }
-
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SPEECH_INPUT) {
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                sourceEdit.setText(Objects.requireNonNull(result).get(0));
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     private void translateText(int fromLanguageCode, int toLanguageCode, String sourceText) {
         translatedTV.setText("Loading...");
         FirebaseTranslatorOptions options = new FirebaseTranslatorOptions.Builder()
                 .setSourceLanguage(fromLanguageCode)
                 .setTargetLanguage(toLanguageCode)
                 .build();
-        FirebaseTranslator translator = FireNaturalLanguage.getInstance().getTranslator(options);
+        FirebaseTranslator translator = FirebaseNaturalLanguage.getInstance().getTranslator(options);
         FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder().build();
-        translator.downloadModelIfNeeded(conditions).addOnSuccessListener(unused ->
-                        translator.translate(sourceText)
-                                .addOnSuccessListener(s ->
-                                        translatedTV.setText(s))
-                                .addOnFailureListener(e ->
-                                        translatedTV.setText(e.getMessage())))
-                .addOnFailureListener(e ->
-                        translatedTV.setText(e.getMessage()));
+        translator.downloadModelIfNeeded(conditions).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                translatedTV.setText("Translating...");
+                translator.translate(sourceText).addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        translatedTV.setText(s);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Fail to translate: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Fail to download language Modal: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     private int getLanguageCode(String language) {
         int languageCode = 0;
