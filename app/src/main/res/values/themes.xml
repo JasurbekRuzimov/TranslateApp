@@ -3,9 +3,7 @@
     <style name="Base.Theme.TranslatorApp" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary</item>
-        <item name="colorAccent">@color/primary</item><!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorAccent">@color/primary</item>
     </style>
 
-    <style name="Theme.TranslatorApp" parent="Base.Theme.TranslatorApp" />
 </resources>
