@@ -13,9 +13,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
@@ -31,13 +33,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-
     private TextInputEditText sourceEdit;
     private TextView translatedTV;
-      String[] fromLang = {"Russian", "English"};
-        String[] toLang = {"English", "Russian"};
-
-
+    String[] fromLang = {"Russian", "English"};
+    String[] toLang = {"English", "Russian"};
     private static final int REQUEST_CODE_SPEECH_INPUT = 1;
     int fromLanguageCode, toLanguageCode = 0;
     Spinner fromSpinner, toSpinner;
@@ -184,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                 0.5f,
                 Animation.RELATIVE_TO_SELF,
                 0.5f);
-        rotateAnimation.setDuration(1000);
+        rotateAnimation.setDuration(300);
         rotateAnimation.setFillAfter(true);
         rotateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -232,4 +231,5 @@ public class MainActivity extends AppCompatActivity {
         toAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         toSpinner.setAdapter(toAdapter);
     }
+
 }
