@@ -1,21 +1,21 @@
 package uz.jasurbekruzimov.translatorapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
@@ -34,24 +34,29 @@ public class MainActivity extends AppCompatActivity {
 
     private TextInputEditText sourceEdit;
     private TextView translatedTV;
-    String[] fromLang = {"From", "English", "Russian", "Turkish", "Korean", "Japanese", "German", "French", "Italian", "Spanish"};
-    String[] toLang = {"To", "English", "Russian", "Turkish", "Korean", "Japanese", "German", "French", "Italian", "Spanish"};
+      String[] fromLang = {"Russian", "English"};
+        String[] toLang = {"English", "Russian"};
+
 
     private static final int REQUEST_CODE_SPEECH_INPUT = 1;
     int fromLanguageCode, toLanguageCode = 0;
+    Spinner fromSpinner, toSpinner;
+    ImageView swipeLang;
 
-    @SuppressLint({"MissingInflatedId", "SetTextI18n"})
+    @SuppressLint({"MissingInflatedId", "SetTextI18n", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Spinner fromSpinner = findViewById(R.id.idFromSpinner);
-        Spinner toSpinner = findViewById(R.id.idToSpinner);
+        fromSpinner = findViewById(R.id.idFromSpinner);
+        toSpinner = findViewById(R.id.idToSpinner);
         sourceEdit = findViewById(R.id.idEditSource);
         ImageView micIV = findViewById(R.id.idIVMic);
+        swipeLang = findViewById(R.id.idSwapLangs);
         MaterialButton translateBtn = findViewById(R.id.idBtnTranslate);
         translatedTV = findViewById(R.id.idTVTranslatedTV);
+        translatedTV.setTextIsSelectable(true);
 
         fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         translateBtn.setOnClickListener(v -> {
             translatedTV.setText("");
-            if (sourceEdit.getText().toString().isEmpty()) {
+            if (Objects.requireNonNull(sourceEdit.getText()).toString().isEmpty()) {
                 Toast.makeText(MainActivity.this, "Please enter text to translate", Toast.LENGTH_SHORT).show();
             } else if (fromLanguageCode == 0) {
                 Toast.makeText(MainActivity.this, "Please select source language", Toast.LENGTH_SHORT).show();
@@ -107,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
                 Toast.makeText(MainActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        });
+
+        swipeLang.setOnClickListener(v -> {
+            performRotateAnimation();
         });
     }
 
@@ -157,34 +166,70 @@ public class MainActivity extends AppCompatActivity {
     private int getLanguageCode(String language) {
         int languageCode = 0;
         switch (language) {
-            case "English":
-                languageCode = FirebaseTranslateLanguage.EN;
-                break;
             case "Russian":
                 languageCode = FirebaseTranslateLanguage.RU;
                 break;
-            case "Turkish":
-                languageCode = FirebaseTranslateLanguage.TR;
-                break;
-            case "Korean":
-                languageCode = FirebaseTranslateLanguage.KO;
-                break;
-            case "Japanese":
-                languageCode = FirebaseTranslateLanguage.JA;
-                break;
-            case "German":
-                languageCode = FirebaseTranslateLanguage.DE;
-                break;
-            case "French":
-                languageCode = FirebaseTranslateLanguage.FR;
-                break;
-            case "Italian":
-                languageCode = FirebaseTranslateLanguage.IT;
-                break;
-            case "Spanish":
-                languageCode = FirebaseTranslateLanguage.ES;
+            case "English":
+                languageCode = FirebaseTranslateLanguage.EN;
                 break;
         }
         return languageCode;
+    }
+
+    private void performRotateAnimation() {
+        RotateAnimation rotateAnimation = new RotateAnimation(
+                0,
+                180,
+                Animation.RELATIVE_TO_SELF,
+                0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f);
+        rotateAnimation.setDuration(1000);
+        rotateAnimation.setFillAfter(true);
+        rotateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                updateUIAfterAnimation();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        swipeLang.startAnimation(rotateAnimation);
+    }
+
+    private void updateUIAfterAnimation() {
+        int tempPosition = fromSpinner.getSelectedItemPosition();
+        fromSpinner.setSelection(toSpinner.getSelectedItemPosition());
+        toSpinner.setSelection(tempPosition);
+
+        int tempLanguageCode = fromLanguageCode;
+        fromLanguageCode = toLanguageCode;
+        toLanguageCode = tempLanguageCode;
+
+        String tempLang = fromLang[fromSpinner.getSelectedItemPosition()];
+        fromLang[fromSpinner.getSelectedItemPosition()] = toLang[toSpinner.getSelectedItemPosition()];
+        toLang[toSpinner.getSelectedItemPosition()] = tempLang;
+
+        sourceEdit.setText(translatedTV.getText());
+        translatedTV.setText("");
+
+        updateSpinnerAdapters();
+    }
+
+    private void updateSpinnerAdapters() {
+        ArrayAdapter<String> fromAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, fromLang);
+        fromAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fromSpinner.setAdapter(fromAdapter);
+
+        ArrayAdapter<String> toAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, toLang);
+        toAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        toSpinner.setAdapter(toAdapter);
     }
 }
