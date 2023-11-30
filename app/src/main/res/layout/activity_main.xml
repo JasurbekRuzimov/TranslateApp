@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -12,11 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
+        android:padding="5dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:contentInsetStart="20dp"
-        android:padding="5dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:ignore="MissingConstraints" >
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,9 +34,9 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="end"
-            android:src="@drawable/translator"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/translator"
             tools:ignore="ContentDescription,UseAppTint" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -50,19 +50,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/gray"
+            android:background="@color/white"
             android:orientation="vertical"
+            android:paddingBottom="10dp"
             tools:ignore="ScrollViewSize">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
                 android:gravity="center"
+                android:orientation="horizontal"
                 android:weightSum="3">
 
                 <Spinner
@@ -75,26 +76,27 @@
                     android:padding="3dp"
                     android:scrollbarSize="15sp"
                     tools:ignore="Suspicious0dp" />
-<LinearLayout
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:layout_gravity="center">
 
-    <ImageView
-        android:id="@+id/idSwapLangs"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:padding="6dp"
-        android:layout_gravity="center"
-        android:background="@drawable/selector_imageview_background"
-        android:src="@drawable/ic_swap"
-        tools:ignore="ContentDescription" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/idSwapLangs"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/selector_imageview_background"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_swap"
+                        tools:ignore="ContentDescription" />
 
 
-</LinearLayout>
+                </LinearLayout>
 
 
                 <Spinner
@@ -207,14 +209,15 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:padding="5dp"
+                android:background="@drawable/text_view_background"
                 android:fontFamily="@font/montserrat"
                 android:gravity="center"
-                android:background="@drawable/text_view_background"
-                android:text="@string/translated_text"
+                android:hint="@string/translated_text"
+                android:padding="10dp"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
+                android:textColor="@color/green"
+                android:textColorHint="@color/gray"
                 android:textSize="14sp" />
 
         </LinearLayout>
