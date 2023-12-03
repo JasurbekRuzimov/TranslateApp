@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
 import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
@@ -33,6 +37,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+
     private TextInputEditText sourceEdit;
     private TextView translatedTV;
     String[] fromLang = {"Russian", "English"};
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     int fromLanguageCode, toLanguageCode = 0;
     Spinner fromSpinner, toSpinner;
     ImageView swipeLang;
+    MaterialSwitch autoTranslate;
+    Button translateBtn;
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n", "ClickableViewAccessibility"})
     @Override
@@ -53,9 +60,10 @@ public class MainActivity extends AppCompatActivity {
         sourceEdit = findViewById(R.id.idEditSource);
         ImageView micIV = findViewById(R.id.idIVMic);
         swipeLang = findViewById(R.id.idSwapLangs);
-        MaterialButton translateBtn = findViewById(R.id.idBtnTranslate);
+        translateBtn = findViewById(R.id.idBtnTranslate);
         translatedTV = findViewById(R.id.idTVTranslatedTV);
         translatedTV.setTextIsSelectable(true);
+        autoTranslate = findViewById(R.id.autoTranslate);
 
         fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -100,22 +108,54 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        micIV.setOnClickListener(v -> {
-            Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-            i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to translate");
-            try {
-                startActivityForResult(i, REQUEST_CODE_SPEECH_INPUT);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(MainActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        micIV.setOnClickListener(v -> startSpeechToText());
 
         swipeLang.setOnClickListener(v -> {
             performRotateAnimation();
         });
+
+        // Set the initial visibility of the translate button
+        translateBtn.setVisibility(autoTranslate.isChecked() ? View.GONE : View.VISIBLE);
+
+        // Add a TextWatcher to the sourceEdit
+        sourceEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Auto-translate whenever the text changes if auto-translate is enabled
+                if (charSequence.length() > 0 && autoTranslate.isChecked()) {
+                    translateText(fromLanguageCode, toLanguageCode, charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        // Set a listener for autoTranslate switch changes
+        autoTranslate.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Toggle the visibility of the translate button based on the auto-translate state
+            translateBtn.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+        });
+
+        // ... (your existing code)
+    }
+
+    private void startSpeechToText() {
+        Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak to translate");
+        try {
+            startActivityForResult(i, REQUEST_CODE_SPEECH_INPUT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -124,7 +164,12 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_SPEECH_INPUT) {
             if (resultCode == RESULT_OK && data != null) {
                 ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                sourceEdit.setText(Objects.requireNonNull(result).get(0));
+                String spokenText = Objects.requireNonNull(result).get(0);
+                sourceEdit.setText(spokenText);
+                // Auto-translate only if the auto-translate switch is on
+                if (autoTranslate.isChecked()) {
+                    translateText(fromLanguageCode, toLanguageCode, spokenText);
+                }
             }
         }
     }
@@ -231,5 +276,4 @@ public class MainActivity extends AppCompatActivity {
         toAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         toSpinner.setAdapter(toAdapter);
     }
-
 }
