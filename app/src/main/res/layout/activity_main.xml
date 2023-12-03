@@ -21,22 +21,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/montserrat"
             android:gravity="center"
             android:text="@string/HeaderText"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end|center"
             android:layout_marginEnd="20dp"
-            android:src="@drawable/translator"
+            android:src="@drawable/communication"
             tools:ignore="ContentDescription,UseAppTint" />
 
     </androidx.appcompat.widget.Toolbar>
@@ -113,102 +112,103 @@
 
             </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:hint="@string/enter_text"
-                android:padding="5dp"
-                app:counterEnabled="true"
-                app:counterMaxLength="4000">
+                android:padding="5dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/idEditSource"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat"
-                    android:importantForAutofill="no"
-                    android:inputType="textImeMultiLine|textMultiLine"
-                    android:maxLines="50"
-                    android:scrollbars="vertical"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"
-                    android:textSize="14sp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="50dp"
+                    android:hint="@string/enter_text"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="3dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/idIVMic"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="InefficientWeight,MissingConstraints">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/idEditSource"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:importantForAutofill="no"
+                        android:inputType="textImeMultiLine|textMultiLine"
+                        android:maxLines="50"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="14sp" />
 
-            <TextView
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/idIVMic"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_mic"
+                    android:tint="@color/blue"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription,MissingConstraints,UseAppTint" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/autoTranslate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="16dp"
+                android:padding="5dp"
+                android:text="@string/auto_translate"
                 android:fontFamily="@font/montserrat"
-                android:gravity="center"
-                android:text="@string/or"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="RtlHardcoded,UseSwitchCompatOrMaterialXml" />
 
-            <ImageView
-                android:id="@+id/idIVMic"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:src="@drawable/ic_mic"
-                android:tint="@color/blue"
-                tools:ignore="ContentDescription,UseAppTint" />
-
-            <TextView
-                android:id="@+id/idTextSaySomething"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/montserrat"
-                android:gravity="center"
-                android:text="@string/say_something"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/idBtnTranslate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/selector_imageview_background"
-                android:fontFamily="@font/montserrat"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="@string/translate"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="4dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end|center"
+                android:layout_marginTop="-47dp"
                 android:layout_marginEnd="20dp"
-                android:background="@color/primary" />
+                android:fontFamily="@font/montserrat"
+                android:background="@drawable/btn_background"
+                android:gravity="center"
+                android:visibility="visible"
+                android:drawableRight="@drawable/ic_swap"
+                android:drawableTint="@color/white"
+                android:text="@string/translate"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:ignore="RtlHardcoded" />
+
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="4dp"-->
+<!--                android:layout_marginStart="20dp"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:layout_marginEnd="20dp"-->
+<!--                android:background="@color/primary" />-->
 
             <TextView
                 android:id="@+id/idTVTranslatedTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/text_view_background"
                 android:fontFamily="@font/montserrat"
                 android:gravity="center"
@@ -219,6 +219,7 @@
                 android:textColor="@color/green"
                 android:textColorHint="@color/gray"
                 android:textSize="14sp" />
+
 
         </LinearLayout>
 
