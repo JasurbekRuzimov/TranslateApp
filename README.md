@@ -1,6 +1,6 @@
 ﻿# Ru-En Translator
  
- Online Translator 
+ Online Translator for `English` & `Russian` languages 🔥
 
 Ru-En Translator - `Splash Screen`
 
